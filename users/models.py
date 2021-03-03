@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
+from datetime import date, datetime
 # Create your models here.
 
 
@@ -63,6 +63,13 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
 
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        return self.is_superuser
+
+
 class Consultants(models.Model):
     name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
@@ -71,12 +78,39 @@ class Consultants(models.Model):
     Dob = models.CharField(max_length=20)
     Mobile = models.CharField(max_length=10)
 
+    def __str__(self):
+        return self.name
+    
+
+def creatUhid():
+    dates = date.today()
+    year = dates.year
+    total_patients = Patients.objects.filter(created_at__year = year).count()
+    if total_patients < 9:
+        text = '{0}/000{1}'.format(str(year), str(total_patients+1))
+    elif (total_patients <99) and (total_patients >=10):
+        text = '{0}/00{1}'.format(str(year), str(total_patients+1))
+
+    elif (total_patients <999 ) and (total_patients >=100):
+        text = '{0}/0{1}'.format(str(year), str(total_patients+1))
+    
+    else:
+        text = '{0}/{1}'.format(str(year), str(total_patients+1))
+    
+    return text
+
+
+
+
+
 
 class Patients(models.Model):
+
+    UhidNo = models.CharField(default=creatUhid, max_length=100)
     title = models.CharField(max_length=10)
     suraname = models.CharField(max_length=50)
     firstName = models.CharField(max_length=50)
-    middleName = models.CharField(max_length=50)
+    middleName = models.CharField(max_length=50, default='', blank=True)
     BirthDate = models.DateField(null=True, blank=True)
     Age = models.IntegerField(default=0)
     gender = models.CharField(max_length=20)
@@ -88,7 +122,7 @@ class Patients(models.Model):
     id_proof_name = models.CharField(max_length=100)
     id_prof_details = models.CharField(max_length=20)
     Weight = models.DecimalField(max_digits=10, decimal_places=3, default=0.000)
-
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 

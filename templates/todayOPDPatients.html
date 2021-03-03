@@ -1,1 +1,53 @@
 {% extends './base2.html' %}
+
+{% block content %}
+
+    <div >
+        <h3>Today's patients</h3>
+        <table class="table" id='patientTable'>
+            <thead>
+                <tr>
+                    <td scope="col">Sr.</td>
+                    <td scope="col">Patient's Name</td>
+                    <td scope="col">N/F</td>
+                    <td scope="col">Consultant</td>
+                    <td scope="col">Payment Category</td>
+                </tr>
+
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                    <tr>
+                        <td>{{ forloop.counter }} </td>
+                        <td> {{ patient.firstName}} {{ patient.middleName }} {{ patient.suraname }} </td>
+                        <td></td>
+                        <td>{{ patient.Consultants.name }}</td>
+                        <td> {{ patient.paymentBy}} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <button type="submit" class="btn btn-active btn-primary">Save</button>
+    </form>
+    
+
+{% endblock %}
+
+
+{% block script %}
+
+<script>
+
+$('#patientTable').DataTable()
+
+
+</script>
+{% endblock %}
+
+
+
+
