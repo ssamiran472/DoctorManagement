@@ -108,10 +108,11 @@ class Patients(models.Model):
 
     UhidNo = models.CharField(default=creatUhid, max_length=100)
     title = models.CharField(max_length=10)
-    suraname = models.CharField(max_length=50)
+    surname = models.CharField(max_length=50)
     firstName = models.CharField(max_length=50)
     middleName = models.CharField(max_length=50, default='', blank=True)
     BirthDate = models.DateField(null=True, blank=True)
+    patient_status = models.CharField(max_length=15, default='N', blank=True)
     Age = models.IntegerField(default=0)
     gender = models.CharField(max_length=20)
     address = models.TextField(blank=True)
@@ -123,6 +124,7 @@ class Patients(models.Model):
     id_prof_details = models.CharField(max_length=20)
     Weight = models.DecimalField(max_digits=10, decimal_places=3, default=0.000)
     created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.CharField(max_length=50, blank=True, null=True)
 
 
 

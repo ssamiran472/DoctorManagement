@@ -1,0 +1,86 @@
+{% extends './base2.html' %}
+
+{% block content %}
+<style>
+.table td, .table th {
+    padding: 0 !important;
+
+}
+tbody tr:hover{
+    cursor: pointer;
+}
+
+</style>
+<div>
+    <h3>Old Patients</h3>
+    UHID No / Name: <input type='text' id='nameornumber'><br>
+    Mobile: <input type='text' id='Mobile'>
+    <table class="table" id='patientTable'>
+        <thead>
+            <tr>
+                <td scope="col">Patient's Name</td>
+                <td scope="col">UHID No</td>
+                <td scope="col">Date</td>
+                <td scope="col">Mobile No</td>
+            </tr>
+
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+            <tr>
+                <td> {{ patient.firstName}} {{patient.middleName}} {{patient.surname}} </td>
+                <td>{{ patient.UhidNo }}</td>
+                <td>{{ patient.created_at|date:"SHORT_DATE_FORMAT" }}</td>
+                <td> {{ patient.tell_no}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+
+
+{% block script %}
+
+<script>
+
+    // $('#patientTable').DataTable()
+    $('#nameornumber').on('keyup', function(){
+        let rows = $('tbody').children()
+        let val = $(this).val().toUpperCase()
+        for(let i=0; i < rows.length; i++){
+            let tds= $(rows[i]).children()
+            let name = $(tds[0]).text().trim().toUpperCase();
+            let uhid = $(tds[1]).text().trim()
+            if(name.includes(val)){
+                console.log(name.includes(val))
+                $(rows[i]).show()
+            }else if(uhid.includes(val)){
+                $(rows[i]).show()
+            }
+            else{
+                $(rows[i]).hide()
+            }
+        }
+    })
+
+
+    $('#Mobile').on('keyup', function(){
+        let rows = $('tbody').children()
+        let val = $(this).val().toUpperCase()
+        for(let i=0; i < rows.length; i++){
+            let tds= $(rows[i]).children()
+            let name = $(tds[3]).text().trim().toUpperCase();
+            if(name.includes(val)){
+                $(rows[i]).show()
+            }
+            else{
+                $(rows[i]).hide()
+            }
+        }
+    })
+
+</script>
+{% endblock %}

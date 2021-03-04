@@ -1,39 +1,192 @@
 {% extends './base2.html' %}
 
 {% block content %}
+<style>
+.table td, .table th {
+    padding: 0 !important;
 
-    <div >
-        <h3>Today's patients</h3>
-        <table class="table" id='patientTable'>
-            <thead>
-                <tr>
-                    <td scope="col">Sr.</td>
-                    <td scope="col">Patient's Name</td>
-                    <td scope="col">N/F</td>
-                    <td scope="col">Consultant</td>
-                    <td scope="col">Payment Category</td>
-                </tr>
+}
 
-            </thead>
-            <tbody>
-                {% for patient in patients %}
-                    <tr>
-                        <td>{{ forloop.counter }} </td>
-                        <td> {{ patient.firstName}} {{ patient.middleName }} {{ patient.suraname }} </td>
-                        <td></td>
-                        <td>{{ patient.Consultants.name }}</td>
-                        <td> {{ patient.paymentBy}} </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+</style>
+<div>
+    <h3>Today's patients</h3>
+    <table class="table" id='patientTable'>
+        <thead>
+            <tr>
+                <td scope="col">Sr.</td>
+                <td scope="col">Patient's Name</td>
+                <td scope="col">N/F</td>
+                <td scope="col">Consultant</td>
+                <td scope="col">Payment Category</td>
+            </tr>
+
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+            <tr>
+                <td>{{ forloop.counter }} </td>
+                <td> {{ patient.firstName}} {{ patient.middleName }} {{ patient.surname }} </td>
+                <td>{{ patient.patient_status }}</td>
+                <td>{{ patient.Consultants.name }}</td>
+                <td> {{ patient.paymentBy}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newPatient">
+    New Patient
+</button>
+
+<div class="modal fade" id="newPatient" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered p-2" role="document" style="min-width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">New Patient</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>Date: </label>
+                                <input type='text' class='col-9 form-control' value="{% now 'SHORT_DATE_FORMAT' %}">
+                            </div>
+                
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-4'>UHID No.: </label>
+                                {{form.UhidNo}}
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>User: </label>
+                                <input type='text' value="Samiran" class='col-md-9 form-control' name='created_by'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>Title: </label>
+                                <select class='form-control col-md-9' name='title'>
+                                    <option>Mr.</option>
+                                    <option>Mrs.</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>Surname: </label>
+                                <input type='text' class='col-md-9 form-control' name='surname'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>Firstname: </label>
+                                <input type='text' class='col-md-9 form-control' name='firstName'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-4'>Middlename: </label>
+                                <input type='text' class='col-md-8 form-control' name='middleName'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-4'>Birth Date: </label>
+                                <input type='date' class='col-md-8 form-control' name='BirthDate'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>Age: </label>
+                                <input type='number' class='col-md-9 form-control' name='Age'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>Gender: </label>
+                                <select class='form-control col-md-9' name='gender'>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>tell.No: </label>
+                                <input type='text' class='col-md-9 form-control' name='tell_no'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>Address: </label>
+                                <input type='text' class='col-md-9 form-control' name='address'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-3'>ref by: </label>
+                                <input type='text' class='col-md-9 form-control' value='SELF' name='ref_by'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-4'>payment By: </label>
+                                <input type='text' class='col-md-8 form-control' value="SELF PAY" name='paymentBy'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-4'>Consultants: </label>
+                                {{form.Consultants}}
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-'>ID Proof: </label>
+                                <select class='form-control col-md-8' name='id_proof_name'>
+                                    <option value="voter">Voter Id</option>
+                                    <option value='aadhar'>Aadhar Card</option>
+                                    <option value="pancard">Pan Card</option>
+                                    <option value="passport">Passport</option>
+                                    <option value="drivinglisence">Driving Lisence</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-4'>No: </label>
+                                <input type='text' name='id_prof_details'>
+                            </div>
+                        </div>
+                        <div class='col-md-4'>
+                            <div class="row">
+                                <label class='col-4'>Weight: </label>
+                                <input type='text' name='Weight'>kg
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-active btn-primary">Save</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
     </div>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_table }}
-        <button type="submit" class="btn btn-active btn-primary">Save</button>
-    </form>
-    
+</div>
 
 {% endblock %}
 
@@ -42,12 +195,8 @@
 
 <script>
 
-$('#patientTable').DataTable()
+    // $('#patientTable').DataTable()
 
 
 </script>
 {% endblock %}
-
-
-
-
