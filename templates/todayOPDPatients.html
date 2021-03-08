@@ -28,15 +28,26 @@
     position: absolute;
     top: 30px;
     width: 80%;
-    height: 200px;
+    max-height: 200px;
     overflow: auto;
     background-color: seagreen;
+    color: white;
 }
 
+.ServiceList > li {
+    cursor: pointer;
+}
 .modal-content{
     min-height: 500px !important;
 }
+.modal-body{
+    position: relative !important;
+}
 
+.last__div{
+    position: absolute !important;
+    bottom: 0 !important;
+}
 </style>
 <div class='row'>
     <div class='col-8'>
@@ -252,56 +263,14 @@
       <div class="modal-body">
         
         <div class='serviceDiv'>
-            <input type="text" placeholder="search service" > <input type="number" > <button class="btn btn-sm">Add</button>
-            <ul class="ServiceList">
-                <li>Consultant1</li>
-                <li>Consultant2</li>
-                <li>Consultant3</li>
-                <li>Consultant4</li>
-                <li>Consultant5</li>
-                <li>Consultant1</li>
-                <li>Consultant2</li>
-                <li>Consultant3</li>
-                <li>Consultant4</li>
-                <li>Consultant5</li>
-
-                <li>Consultant1</li>
-                <li>Consultant2</li>
-                <li>Consultant3</li>
-                <li>Consultant4</li>
-                <li>Consultant5</li>
-
-
-                <li>Consultant1</li>
-                <li>Consultant2</li>
-                <li>Consultant3</li>
-                <li>Consultant4</li>
-                <li>Consultant5</li>
-
-
-                <li>Consultant1</li>
-                <li>Consultant2</li>
-                <li>Consultant3</li>
-                <li>Consultant4</li>
-                <li>Consultant5</li>
-
-                <li>Consultant1</li>
-                <li>Consultant2</li>
-                <li>Consultant3</li>
-                <li>Consultant4</li>
-                <li>Consultant5</li>
-
-
-                <li>Consultant1</li>
-                <li>Consultant2</li>
-                <li>Consultant3</li>
-                <li>Consultant4</li>
-                <li>Consultant5</li>
+            <input type="text" id='serviceName' placeholder="search service" > <input id="serviceAmount" type="number" > <button class="btn btn-sm" id='addService'>Add</button>
+            <ul class="ServiceList" id="serviceLists" style="display: none;">
+                
             </ul>
         </div>
         
 
-        <table>
+        <table id="billTable" style="width: 100%;">
             <thead>
                 <tr>
                     <td>Sr No</td>
@@ -314,11 +283,24 @@
                 
             </tbody>
         </table>
-
+        <div class="row last__div">
+            <div class="col-4">
+                <label>Amount</label>
+                <input id="TotalAmount" class="form-control" type="number" value="0">
+            </div>
+            <div class="col-4">
+                <label>Paid</label>
+                <input id="paid" class="form-control" type="number" value="0">
+            </div>
+            <div class="col-4">
+                <label>Balance</label>
+                <input id="balance" class="form-control" disabled type="number" value="0">
+            </div>
+        </div>
       </div> 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" id="Save">Save</button>
+        <button type="button" class="btn btn-primary">Finalize</button>
       </div>
     </div>
   </div>
@@ -392,7 +374,13 @@ let curRow, patient_id;
 
 $('#patientTable tbody').find('tr').click(function(){
     let index_number = $(this).index();
-    patient_id = $(this).attr('id').slice(1,);
+    patient_id = {
+        patient: $(this).attr('id').slice(1,),
+        total_bill: 0,
+        paid: 0,
+        balance: 0
+    }
+
     if(curRow >=0){
         getRow(curRow).className = 'normal';
     }
@@ -431,18 +419,130 @@ function keydownHandler (evt) {
 
 
 /////////////////////////////////////////////////////////////////////////////////
-
+ 
 $('#billButton').click(function(e){
     // e.preventDefault()
     e.stopImmediatePropagation()
     if(patient_id){
         $('#billMOdal').modal('show')
-        let patientDataArr = todaysPatients.filter(pat => pat.id == patient_id)
+        let patientDataArr = todaysPatients.filter(pat => pat.id == patient_id.patient)
         $('#patientName').html('<b>Patient Name: '+ patientDataArr[0].firstName + ' </b>')
     
     
     }
 })
+
+
+$('#serviceName').on('keyup', function(){
+    let val = $(this).val().toLowerCase()
+    let filltered_services = all_services.filter(item=>{
+        if(item.particular.toLowerCase().indexOf(val) !=-1){
+            return item
+        }
+    })
+    let lists = ''
+    filltered_services.map(item =>{
+        lists += `<li id="seervice${item.id}">${item.particular}</li>`;
+    })
+
+    $('.ServiceList').html(lists)
+    $('.ServiceList').css('display', 'block')
+
+
+})
+
+let bill_arr = [];
+let selected_obj = {};
+
+
+$('.ServiceList').on('click', 'li', function(){
+    let id = $(this).attr('id').slice(8,)
+    for(let i =0; i < all_services.length; i++){
+        let obj = all_services[i]
+        if(obj.id == id){
+            $('#serviceName').val(obj.particular)
+            $('#serviceAmount').val(obj.charges)
+            selected_obj = obj;
+            $('.ServiceList').hide()
+            break;
+        }
+    }
+})
+
+
+$('#addService').click(function(){
+    if(selected_obj != {}){
+        let obj = {
+            amount: $('#serviceAmount').val(),
+            service: selected_obj.id,
+            user: 'Admin'
+        }
+        bill_arr.push(obj)
+        console.log(bill_arr)
+        let total_rows = $('#billTable tbody').find('tr').length;
+
+        let row = `
+            <tr>
+                <td>${++total_rows}</td>
+                <td>${selected_obj.particular}</td>
+                <td>${obj.amount}</td>
+                <td>Admin</td>
+            </tr>
+        `;
+        $('#billTable tbody').append(row)
+        $('#serviceName').val('')
+        $('#serviceAmount').val('')
+        patient_id.total_bill = parseFloat(patient_id.total_bill) + parseFloat(obj.amount)
+        patient_id.balance = parseFloat(patient_id.balance) + parseFloat(obj.amount)
+        changeTable()
+    }
+})
+
+function changeTable(){
+    $('#TotalAmount').val(patient_id.total_bill) 
+    $('#paid').val(patient_id.paid)
+    $('#balance').val(patient_id.balance)
+}
+
+$('#paid').on('keyup', function(){
+    let val = $(this).val() !== ''? $(this).val(): 0;
+    patient_id.paid = parseFloat(val)
+    patient_id.balance = parseFloat(patient_id.total_bill) - parseFloat(val)
+    changeTable()
+})
+
+
+
+$('#Save').click(function(){
+    $.ajax({
+        url: '/apis/TodayBillHeader/',
+        method: 'POST',
+        data: JSON.stringify(patient_id),
+        contentType: 'application/json',
+        beforeSend: function(xhr){
+            xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'))
+        }
+    }).done(function(resp){
+        // bill_arr
+        for(let i =0; i < bill_arr.length; i++){
+            let obj = bill_arr[i]
+            obj['bill_header'] = resp.id
+            $.ajax({
+                url: '/apis/TodayBillDetails/',
+                method: 'POST',
+                data: JSON.stringify(obj),
+                contentType: 'application/json',
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'))
+                }
+            }).done(function(response){console.log(response)}).fail(err=>console.log(err))
+        }
+        $('#billMOdal').modal('hide')
+    }).fail(err=>console.log(err))
+})
+
+
+
 
 
 
