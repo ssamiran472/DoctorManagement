@@ -23,7 +23,8 @@ def todayOpdPatients(request):
         else:
             print(form.errors)
 
-    today_patient = Patients.objects.filter(created_at__date=today)
+    # today_patient = Patients.objects.filter(created_at__date=today)
+    today_patient = Patients.objects.all()
     context['patients'] = today_patient
     context['form'] = PatientsUhiForm()
     

@@ -4,41 +4,90 @@
 <style>
 .table td, .table th {
     padding: 0 !important;
+    cursor: pointer;
+}
+.table{
+    max-height: 500px !important;
+}
 
+.functionButtons{
+    position: fixed !important;
+    bottom : 0!important;
+}
+
+.highlighted{
+    background: seagreen;
+    color: white;
+}
+
+.serviceDiv {
+    position: relative;
+}
+
+.ServiceList{
+    position: absolute;
+    top: 30px;
+    width: 80%;
+    height: 200px;
+    overflow: auto;
+    background-color: seagreen;
+}
+
+.modal-content{
+    min-height: 500px !important;
 }
 
 </style>
-<div>
-    <h3>Today's patients</h3>
-    <table class="table" id='patientTable'>
-        <thead>
-            <tr>
-                <td scope="col">Sr.</td>
-                <td scope="col">Patient's Name</td>
-                <td scope="col">N/F</td>
-                <td scope="col">Consultant</td>
-                <td scope="col">Payment Category</td>
-            </tr>
+<div class='row'>
+    <div class='col-8'>
+        <h3>Today's patients</h3>
+        <table class="table" id='patientTable'>
+            <thead>
+                <tr>
+                    <td scope="col">Sr.</td>
+                    <td scope="col">Patient's Name</td>
+                    <td scope="col">N/F</td>
+                    <td scope="col">Consultant</td>
+                    <td scope="col">Payment Category</td>
+                </tr>
 
-        </thead>
-        <tbody>
-            {% for patient in patients %}
-            <tr>
-                <td>{{ forloop.counter }} </td>
-                <td> {{ patient.firstName}} {{ patient.middleName }} {{ patient.surname }} </td>
-                <td>{{ patient.patient_status }}</td>
-                <td>{{ patient.Consultants.name }}</td>
-                <td> {{ patient.paymentBy}} </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                <tr id='p{{patient.id}}'>
+                    <td>{{ forloop.counter }} </td>
+                    <td> {{ patient.firstName}} {{ patient.middleName }} {{ patient.surname }} </td>
+                    <td>{{ patient.patient_status }}</td>
+                    <td>{{ patient.Consultants.name }}</td>
+                    <td> {{ patient.paymentBy}} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-4">
+
+    </div>
+    
 </div>
 
-
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newPatient">
-    New Patient
-</button>
+<div class='functionButtons'>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newPatient">
+        New Patient
+    </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#">
+        Follow-up patient
+    </button>
+    <button type="button" id="billButton" class="btn btn-primary" data-toggle="modal" data-target="#billMOdal">
+        Add bill patient
+    </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#">
+        Change Consultant
+    </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#">
+        Print Paper
+    </button>
+</div>
 
 <div class="modal fade" id="newPatient" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
@@ -182,10 +231,97 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
+</div>
+
+
+{% comment %} Add BILL  {% endcomment %}
+
+<div class="modal fade" id="billMOdal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5> -->
+        <p id="patientName"></p>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <div class='serviceDiv'>
+            <input type="text" placeholder="search service" > <input type="number" > <button class="btn btn-sm">Add</button>
+            <ul class="ServiceList">
+                <li>Consultant1</li>
+                <li>Consultant2</li>
+                <li>Consultant3</li>
+                <li>Consultant4</li>
+                <li>Consultant5</li>
+                <li>Consultant1</li>
+                <li>Consultant2</li>
+                <li>Consultant3</li>
+                <li>Consultant4</li>
+                <li>Consultant5</li>
+
+                <li>Consultant1</li>
+                <li>Consultant2</li>
+                <li>Consultant3</li>
+                <li>Consultant4</li>
+                <li>Consultant5</li>
+
+
+                <li>Consultant1</li>
+                <li>Consultant2</li>
+                <li>Consultant3</li>
+                <li>Consultant4</li>
+                <li>Consultant5</li>
+
+
+                <li>Consultant1</li>
+                <li>Consultant2</li>
+                <li>Consultant3</li>
+                <li>Consultant4</li>
+                <li>Consultant5</li>
+
+                <li>Consultant1</li>
+                <li>Consultant2</li>
+                <li>Consultant3</li>
+                <li>Consultant4</li>
+                <li>Consultant5</li>
+
+
+                <li>Consultant1</li>
+                <li>Consultant2</li>
+                <li>Consultant3</li>
+                <li>Consultant4</li>
+                <li>Consultant5</li>
+            </ul>
+        </div>
+        
+
+        <table>
+            <thead>
+                <tr>
+                    <td>Sr No</td>
+                    <td>Bill Name</td>
+                    <td>Amount</td>
+                    <td>User</td>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+
+      </div> 
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
@@ -194,8 +330,121 @@
 {% block script %}
 
 <script>
+let all_services = [];
+let bill_header = [];
+let billDetails = [];
 
-    // $('#patientTable').DataTable()
+let todaysPatients = [];
+
+$.ajax({
+    url: '/apis/all_services/',
+    method: 'GET',
+    async: false,
+    contentType: 'application/json'
+}).done(resp=> all_services=resp)
+
+
+$.ajax({
+    url: '/apis/TodayBillDetails/',
+    method: 'GET',
+    async: false,
+    contentType: 'application/json'
+}).done(resp=>billDetails=resp)
+
+
+$.ajax({
+    url: '/apis/TodayBillHeader/',
+    method: 'GET',
+    async: false,
+    contentType: 'application/json'
+}).done(resp=>billDetails=resp)
+
+
+$.ajax({
+    url: '/apis/TodayPatients/',
+    method: 'GET',
+    async: false,
+    contentType: 'application/json'
+}).done(resp=>{todaysPatients=resp})
+
+
+
+//  down key action  
+
+
+
+/**
+ * Gets the tr at the specified row or column
+ */
+var tbody = document.getElementsByTagName('tbody')[0];
+function getRow(row) {
+    return tbody.getElementsByTagName('tr')[row];
+}
+
+// store these so we won't have to keep recalculating
+var numRows = tbody.getElementsByTagName('tr').length;
+
+// index of the currently highlighted row
+
+let curRow, patient_id;
+
+// highlight the initially highlighted cell
+
+$('#patientTable tbody').find('tr').click(function(){
+    let index_number = $(this).index();
+    patient_id = $(this).attr('id').slice(1,);
+    if(curRow >=0){
+        getRow(curRow).className = 'normal';
+    }
+    getRow(index_number).className = 'highlighted';
+    curRow = index_number;
+
+})
+
+
+// listen for keydown event
+if (addEventListener) {
+  window.addEventListener('keydown',keydownHandler, false);
+} else if (window.attachEvent) {
+  window.attachEvent('onkeydown', keydownHandler);
+}
+
+
+
+// handle keydown event
+function keydownHandler (evt) {
+    // return the old cell to normal
+    if(!curRow) return
+
+    getRow(curRow).className = 'normal';
+
+    // increment/decrement the position of the current cell
+    // depending on the key pressed
+    if (evt.keyCode == 38 && curRow > 0) // up
+        curRow--;
+    else if (evt.keyCode == 40 && curRow < numRows-1) // down
+        curRow++;
+
+    // update the new cell
+    getRow(curRow).className = 'highlighted';  
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
+$('#billButton').click(function(e){
+    // e.preventDefault()
+    e.stopImmediatePropagation()
+    if(patient_id){
+        $('#billMOdal').modal('show')
+        let patientDataArr = todaysPatients.filter(pat => pat.id == patient_id)
+        $('#patientName').html('<b>Patient Name: '+ patientDataArr[0].firstName + ' </b>')
+    
+    
+    }
+})
+
+
 
 
 </script>

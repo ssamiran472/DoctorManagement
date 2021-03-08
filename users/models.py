@@ -127,6 +127,13 @@ class Patients(models.Model):
     created_by = models.CharField(max_length=50, blank=True, null=True)
 
 
+    @property
+    def full_name(self):
+        if self.middleName:
+            return '{0} {1} {2}'.format(self.firstName, self.middleName, self.surname)
+        else:
+            return '{0} {1}'.format(self.firstName, self.surname)
+
 
 
 
