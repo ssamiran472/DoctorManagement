@@ -119,7 +119,6 @@ class Patients(models.Model):
     tell_no = models.CharField(max_length=10)
     ref_by = models.CharField(max_length=100)
     paymentBy = models.CharField(max_length=10)
-    Consultants=models.ForeignKey(Consultants, on_delete=models.CASCADE)
     id_proof_name = models.CharField(max_length=100)
     id_prof_details = models.CharField(max_length=20)
     Weight = models.DecimalField(max_digits=10, decimal_places=3, default=0.000)

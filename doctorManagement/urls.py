@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from users.api import searchPatient
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pages.urls')),
     path('apis/', include('opd.urls')),
-    
+    path('searched', searchPatient)
 ]

@@ -111,13 +111,18 @@
                 </button>
             </div>
             <div class="modal-body">
+                <label for="searchPatinet">Search Patient</label>
+                <input type="text" placeholder='Search here for followup patient' id='searchPatinet'>
+                <ul id='search_patient'>
+
+                </ul>
                 <form method="post">
                     {% csrf_token %}
                     <div class="row">
                         <div class='col-md-4'>
                             <div class="row">
                                 <label class='col-3'>Date: </label>
-                                <input type='text' class='col-9 form-control' value="{% now 'SHORT_DATE_FORMAT' %}">
+                                <input type='text' class='col-9 form-control' disabled value="{% now 'SHORT_DATE_FORMAT' %}">
                             </div>
                 
                         </div>
@@ -130,7 +135,7 @@
                         <div class='col-md-4'>
                             <div class="row">
                                 <label class='col-3'>User: </label>
-                                <input type='text' value="Samiran" class='col-md-9 form-control' name='created_by'>
+                                <input type='text' disabled value="Samiran" class='col-md-9 form-control' name='created_by'>
                             </div>
                         </div>
                         <div class='col-md-4'>
@@ -209,7 +214,11 @@
                         <div class='col-md-4'>
                             <div class="row">
                                 <label class='col-4'>Consultants: </label>
-                                {{form.Consultants}}
+                                <select name="consultants">
+                                {% for consultant in consultants %}
+                                    <option value='{{consultant.id}}'>{{consultant.name}}</option>
+                                {% endfor %}
+                                </select>
                             </div>
                         </div>
                         <div class='col-md-4'>
@@ -542,6 +551,25 @@ $('#Save').click(function(){
 })
 
 
+$('#searchPatinet').on('keyup', function(){
+    let val = $(this).val()
+    console.log(val)
+
+    $.ajax({
+        url: '/searched?name=' + val, 
+        method: 'GET',
+        contentType: 'application/json'
+    }).done(resp => {
+        console.log(resp)
+        let lists = '';
+        for(let i=0; i < resp.length; i++){
+            lists += `<li id='f${resp[i].id}'>${resp[i]['firstName']} ${resp[i]['surname']}(${resp[i]['tell_no']} / ${resp[i]['address'].slice(0,10)}...)</li>`
+        }
+        $('#search_patient').html(lists)
+    
+    })
+
+})
 
 
 

@@ -1,5 +1,6 @@
+import datetime
 from django.db import models
-from users.models import Patients
+from users.models import Patients, Consultants
 
 
 class Services(models.Model):
@@ -13,7 +14,8 @@ class Services(models.Model):
     
 
 def makeBillNumber():
-    totalHeader = BillHeader.objects.all().count()
+    today = datetime.date.today()
+    totalHeader = BillHeader.objects.filter(created_at__date = today).count()
     if totalHeader <10:
         return '000' + str(totalHeader)
     elif totalHeader < 100:
@@ -53,7 +55,13 @@ class BillDetails(models.Model):
 
 
 
-
+class OpdPatients(models.Model):
+    '''
+        HERE ONLY A PATIENT AND A DOCTOR DATA WILL BE SAVE FOR OPD PATIENT DATA.
+    '''
+    patients = models.ForeignKey(Patients, on_delete=models.CASCADE)
+    consultants = models.ForeignKey(Consultants, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 
