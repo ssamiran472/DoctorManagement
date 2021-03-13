@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "d:\\doctorManagement\\env\\Scripts\\python.exe"
+    "python.pythonPath": "C:\\Users\\Admin\\.virtualenvs\\DoctorManagement-KYU27X1O\\Scripts\\python.exe",
+    "git.ignoreLimitWarning": true
 }
